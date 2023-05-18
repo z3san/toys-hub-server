@@ -57,7 +57,11 @@ async function run() {
 
 
   
-
+  app.get("/categoryToys/:text", async(req, res )=>{
+    const result = await toysCollection.find({category: req.params.text}).toArray()
+    console.log(result);
+    res.send(result)
+  })
 
 
 
