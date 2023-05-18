@@ -33,7 +33,18 @@ async function run() {
         res.send('ToysHub server is running ')
     } )
 
+    app.post('/uploadToys', async (req, res)=>{
+      const data = req.body;
+      console.log(data);
+      const result = await toysCollection.insertOne(data)
+      res.send(result)
+  })
 
+  app.get('/allToys', async(req, res)=>{
+    const result = await toysCollection.find().toArray()
+    console.log(result);
+    res.send(result)
+  })
 
 
 
