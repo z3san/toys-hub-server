@@ -51,7 +51,6 @@ async function run() {
     console.log(id);
     const query = { _id: new ObjectId(id) };
     const result = await toysCollection.find(query).toArray()
-    console.log(result);
     res.send(result);
   });
 
@@ -59,14 +58,11 @@ async function run() {
   
   app.get("/categoryToys/:text", async(req, res )=>{
     const result = await toysCollection.find({category: req.params.text}).toArray()
-    console.log(result);
     res.send(result)
   })
 
 
   app.get("/myToys/:email", async (req, res)=>{
-   
-    console.log(req.params.email);
     const result = await toysCollection.find({seller_email: req.params.email}).toArray()
     res.send(result)
   } )
