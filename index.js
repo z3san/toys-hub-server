@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    //  await client.connect();
 
     const toysCollection = client.db('toyCollection').collection('toysData')
 
@@ -35,14 +35,14 @@ async function run() {
 
     app.post('/uploadToys', async (req, res)=>{
       const data = req.body;
-      console.log(data);
+      
       const result = await toysCollection.insertOne(data)
       res.send(result)
   })
 
   app.get('/allToys', async(req, res)=>{
-    const result = await toysCollection.find().toArray()
-    console.log(result);
+    const result = await toysCollection.find().limit(20).toArray()
+    
     res.send(result)
   })
 
@@ -66,6 +66,39 @@ async function run() {
     const result = await toysCollection.find({seller_email: req.params.email}).toArray()
     res.send(result)
   } )
+
+  app.put("/updatedToys/:id", async (req, res) => {
+    const id = req.params.id;
+    console.log(id);
+    const filter = { _id: new ObjectId(id) };
+    const options = { upsert: true };
+    const updatedToys = req.body;
+    const newToy = {
+      
+        $set: {
+          price: updatedToys.price,
+          available_quantity: updatedToys.available_quantity,
+          description: updatedToys.description,
+        },
+      
+    };
+    const result = await toysCollection.updateOne(filter, newToy, options )
+    res.send(result)
+  });
+
+
+
+  app.delete('/toys/:id', async(req, res)=>{
+    const id  = req.params.id;
+    const query = {_id: new ObjectId(id)}
+    const result = await toysCollection.deleteOne(query)
+    res.send(result);
+})
+
+
+
+
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
